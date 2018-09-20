@@ -188,14 +188,16 @@ SocketIoEngine.prototype.step = function (requestSpec, ee) {
 
         // Acknowledge required so add callback to emit
         if (needEmit) {
-          socketio.emit(outgoing.channel, outgoing.data, ackCallback);
+            const splitData = ougoing.data.split('|');
+            socketio.emit(outgoing.channel, ...splitData);
         } else {
           ackCallback();
         }
       } else {
         // No acknowledge data is expected, so emit without a listener
         if (needEmit) {
-          socketio.emit(outgoing.channel, outgoing.data);
+            const splitData = ougoing.data.split('|');
+            socketio.emit(outgoing.channel, ...splitData);
         }
         markEndTime(ee, context, startedAt);
         return callback(null, context);
@@ -223,7 +225,8 @@ SocketIoEngine.prototype.step = function (requestSpec, ee) {
         });
       });
       // Send the data on the specified socket.io channel
-      socketio.emit(outgoing.channel, outgoing.data);
+        const splitData = ougoing.data.split('|');
+        socketio.emit(outgoing.channel, ...splitData);
       // If we don't get a response within the timeout, fire an error
       let waitTime = self.config.timeout || 10;
       waitTime *= 1000;
